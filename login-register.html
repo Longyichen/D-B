@@ -469,16 +469,16 @@
                                 <div id="lg1" class="tab-pane active">
                                     <div class="login-form-container">
                                         <div class="login-register-form">
-                                            <form action="#" method="post">
-                                                <input type="text" name="user-name" placeholder="Username">
-                                                <input type="password" name="user-password" placeholder="Password">
+                                            <form>
+                                                <input type="text" id="user-name" placeholder="Username">
+                                                <input type="password" id="user-password" placeholder="Password">
                                                 <div class="button-box">
                                                     <div class="login-toggle-btn">
                                                         <input type="checkbox">
                                                         <label>Remember me</label>
                                                         <a href="#">Forgot Password?</a>
                                                     </div>
-                                                    <button type="submit">Login</button>
+                                                    <button onclick="postLoginData(); return false">Login</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -487,12 +487,12 @@
                                 <div id="lg2" class="tab-pane">
                                     <div class="login-form-container">
                                         <div class="login-register-form">
-                                            <form action="#" method="post">
-                                                <input type="text" name="user-name" placeholder="Username">
-                                                <input type="password" name="user-password" placeholder="Password">
-                                                <input name="user-email" placeholder="Email" type="email">
+                                            <form>
+                                                <input type="text" id="r-user-name" placeholder="Username">
+                                                <input type="password" id="r-user-password" placeholder="Password">
+                                                <input id ="user-email" placeholder="Email" type="email">
                                                 <div class="button-box">
-                                                    <button type="submit">Register</button>
+                                                    <button onclick="postRegisterData(); return false">Register</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -653,6 +653,79 @@
     <script src="assets/js/plugins/smoothscroll.js"></script>
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
+
+    <!-- Functions -->
+    <script>
+        function postLoginData() {
+        $.ajax({
+            url: "/login/userLogin",
+            data: {
+                username: $("#user-name").val(),
+                password: $("#user-password").val()
+            },
+            type: "POST",
+            timeout: 36000,
+            dataType: "json",
+            success: function (data, textStatus) {
+                //alert(data);
+                console.log(data.code);
+                // var dataJson = eval("(" + data + ")");
+                console.log(data.body);
+                // window.location.href = "/";
+                if (data.code === 200) {
+                    alert("登录成功");
+                    console.log("登录成功");
+                    // window.location.href = "/";
+                } else if (data.code === 300) {
+                    console.log("账号不存在，请重新输入！");
+                    // window.location.href = "/";
+                } else if (data.code === 400) {
+                    console.log("密码有误，请重新输入！");
+                    // window.location.href = "/";
+                } else {
+                    console.log("登录出错！");
+                    // window.location.href = "/";
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("error:" + textStatus);
+            }
+        })
+    }
+
+        function postRegisterData() {
+            $.ajax({
+                url: "/login/userRegister",
+                data: {
+                    username: $("#r-user-name").val(),
+                    password: $("#r-user-password").val(),
+                    name: $("#user-email").val()
+                },
+                type: "POST",
+                timeout: 36000,
+                dataType: "json",
+                success: function (data, textStatus) {
+                    // var dataJson = eval("(" + data + ")");
+                    if (data.code === 200) {
+                        alert("注册成功");
+                        window.location.href = "/login";
+                    } else if (data.code === 300) {
+                        alert("该账号已存在！");
+                    } else if (data.code === 400) {
+                        alert("注册失败，请重新注册");
+                    } else {
+                        alert("注册出错！");
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("error:" + textStatus);
+                }
+            })
+        }
+
+    </script>
+
+
 </body>
 
 </html>
